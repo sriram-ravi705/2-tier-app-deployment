@@ -76,3 +76,14 @@ module "private_ec2" {
   public_ip     = "false"
   instance_name = "app"
 }
+
+module "rds_sql" {
+  source          = "./modules/rds"
+  db_username     = var.database_username
+  password        = var.database_password
+  private_subnets = [module.subnets.db_subnet_ids[0], module.subnets.db_subnet_ids[1]]
+  db_sub_name     = "database_rds"
+  sg              = [module.sg.web_sg]
+  db_name = var.database_name
+}
+

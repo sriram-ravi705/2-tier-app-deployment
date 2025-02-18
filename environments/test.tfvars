@@ -6,3 +6,6 @@ private_subnet_cidr = ["11.0.3.0/24", "11.0.4.0/24"]
 db_subnet_cidr      = ["11.0.5.0/24", "11.0.6.0/24"]
 public_source_gateway_cidr_block = "0.0.0.0/0"
 private_source_gateway_cidr_block = "0.0.0.0/0"
+database_username="admin"
+database_password="Sriramravi2000"
+database_name="sequre"
