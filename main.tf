@@ -87,3 +87,17 @@ module "rds_sql" {
   db_name = var.database_name
 }
 
+
+module "alb" {
+  source = "./modules/alb"
+  security_groups = [module.sg.web_sg]
+  subnets = [module.subnets.private_subnet_ids[0],module.subnets.private_subnet_ids[1]]
+  target_group_arn=module.target_group.target_arn
+}
+
+module "target_group" {
+  source = "./modules/target_group"
+  vpc_id = module.vpc.vpc_id
+  ec2 = module.private_ec2.private_ec2_ids
+  depends_on = [module.private_ec2]
+}
