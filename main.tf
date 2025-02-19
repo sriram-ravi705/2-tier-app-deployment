@@ -107,3 +107,10 @@ module "ami" {
   ami_name = "terraform_private_ec2_backup"
   instance_id = module.private_ec2.private_ip[0]
 }
+
+module "launch_template" {  
+  source = "./modules/launch_template"
+  launch_template_name = "lt_ami"
+  image_id = module.ami
+  sg=[module.sg.app_sg]
+}
