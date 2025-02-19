@@ -58,7 +58,7 @@ module "sg" {
 }
 
 module "public_ec2" {
-  source        = "./modules/ec2"
+  source        = "./modules/public_ec2"
   ami           = "ami-04b4f1a9cf54c11d0"
   instance_type = "t2.micro"
   subnet        = module.subnets.public_subnet_ids[0]
@@ -68,13 +68,13 @@ module "public_ec2" {
 }
 
 module "private_ec2" {
-  source        = "./modules/ec2"
-  ami           = "ami-04b4f1a9cf54c11d0"
-  instance_type = "t2.micro"
-  subnet        = module.subnets.private_subnet_ids[0]
-  sg            = [module.sg.app_sg]
-  public_ip     = "false"
-  instance_name = "app"
+  source                = "./modules/private_ec2"
+  private_ami           = "ami-04b4f1a9cf54c11d0"
+  private_instance_type = "t2.micro"
+  private_subnet        = module.subnets.private_subnet_ids[0]
+  private_sg            = [module.sg.app_sg]
+  private_public_ip     = "false"
+  instance_name         = "app"
 }
 
 module "rds_sql" {
@@ -84,20 +84,26 @@ module "rds_sql" {
   private_subnets = [module.subnets.db_subnet_ids[0], module.subnets.db_subnet_ids[1]]
   db_sub_name     = "database_rds"
   sg              = [module.sg.web_sg]
-  db_name = var.database_name
+  db_name         = var.database_name
 }
 
 
 module "alb" {
-  source = "./modules/alb"
-  security_groups = [module.sg.web_sg]
-  subnets = [module.subnets.private_subnet_ids[0],module.subnets.private_subnet_ids[1]]
-  target_group_arn=module.target_group.target_arn
+  source           = "./modules/alb"
+  security_groups  = [module.sg.web_sg]
+  subnets          = [module.subnets.private_subnet_ids[0], module.subnets.private_subnet_ids[1]]
+  target_group_arn = module.target_group.target_arn
 }
 
 module "target_group" {
-  source = "./modules/target_group"
-  vpc_id = module.vpc.vpc_id
-  ec2 = module.private_ec2.private_ec2_ids
+  source     = "./modules/target_group"
+  vpc_id     = module.vpc.vpc_id
+  ec2        = module.private_ec2.private_ip
   depends_on = [module.private_ec2]
+}
+
+module "ami" {
+  source = "./modules/ami_backup"
+  ami_name = "terraform_private_ec2_backup"
+  instance_id = module.private_ec2.private_ip[0]
 }

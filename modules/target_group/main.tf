@@ -9,8 +9,8 @@ resource "aws_lb_target_group" "lb_target_group" {
 }
 
 resource "aws_lb_target_group_attachment" "target_group_1" {
-    for_each = toset(var.ec2)
+    count = length(var.ec2)
     target_group_arn = aws_lb_target_group.lb_target_group.arn
-    target_id = each.value
+    target_id = element(var.ec2,count.index)
     port = 80
 }
