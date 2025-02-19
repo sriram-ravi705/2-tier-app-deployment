@@ -35,11 +35,23 @@ module "eip" {
   eip_name = "nat_eip"
 }
 
+module "eip2" {
+  source   = "./modules/eip"
+  eip_name = "nat_eip2"
+}
+
 module "nat" {
   source                    = "./modules/nat"
   nat_gateway_eip           = module.eip.nat_eip
   nat_gateway_name          = "${var.environment} private_nat_gateway"
   nat_gateway_public_subnet = module.subnets.public_subnet_ids[0]
+}
+
+module "nat2" {
+  source                    = "./modules/nat"
+  nat_gateway_eip           = module.eip2.nat_eip
+  nat_gateway_name          = "${var.environment} private_nat_gateway_1"
+  nat_gateway_public_subnet = module.subnets.public_subnet_ids[1]
 }
 
 module "private_route_table" {
@@ -48,7 +60,16 @@ module "private_route_table" {
   internet_gateway   = module.nat.nat_gat_id
   gateway_cidr_block = var.private_source_gateway_cidr_block
   public_route_name  = "${var.environment} private_router"
-  public_subnets     = [module.subnets.private_subnet_ids[0], module.subnets.private_subnet_ids[1]]
+  public_subnets     = [module.subnets.private_subnet_ids[0]]
+}
+
+module "private_route_table2" {
+  source             = "./modules/route_table"
+  vpc_id             = module.vpc.vpc_id
+  internet_gateway   = module.nat2.nat_gat_id
+  gateway_cidr_block = var.private_source_gateway_cidr_block
+  public_route_name  = "${var.environment} private_router"
+  public_subnets     = [module.subnets.private_subnet_ids[1]]
 }
 
 module "sg" {
@@ -111,6 +132,17 @@ module "ami" {
 module "launch_template" {  
   source = "./modules/launch_template"
   launch_template_name = "lt_ami"
-  image_id = module.ami
+  image_id = module.ami.ami_id
   sg=[module.sg.app_sg]
+  instance_type="t2.micro"
+}
+
+
+module "ag" {
+  source = "./modules/ag"
+  subnet_ids = [module.subnets.private_subnet_ids[0],module.subnets.private_subnet_ids[1]]
+  launch_template_id = module.launch_template.launch_template_id
+  target_group_arns = [module.target_group.target_arn]
+  ag_name = "auto_scaling"
+  depends_on = [ module.launch_template ]
 }
