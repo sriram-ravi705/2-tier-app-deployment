@@ -1,6 +1,7 @@
 resource "aws_lb" "lb" {
     security_groups = var.security_groups
     subnets = var.subnets
+    internal = var.internel
     tags = {
         Name = "aws_lb"
     }

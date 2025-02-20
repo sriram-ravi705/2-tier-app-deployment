@@ -1,3 +1,5 @@
+
+
 resource "aws_autoscaling_group" "ag" {
   desired_capacity = 2
   min_size = 1
@@ -13,4 +15,5 @@ resource "aws_autoscaling_group" "ag" {
     value = var.ag_name
     propagate_at_launch = false
   }
+  
 }
