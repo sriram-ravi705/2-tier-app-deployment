@@ -11,14 +11,14 @@ module "ig" {
 }
 
 module "subnets" {
-  source              = "./modules/subnet"
-  vpc_id              = module.vpc.vpc_id
-  public_subnet_cidr  = var.public_subnet_cidr
+  source             = "./modules/subnet"
+  vpc_id             = module.vpc.vpc_id
+  public_subnet_cidr = var.public_subnet_cidr
   # private_subnet_cidr = var.private_subnet_cidr
-  db_subnet_cidr      = var.db_subnet_cidr
-  public_subnet_name  = "${var.environment} Web Subnet"
+  db_subnet_cidr     = var.db_subnet_cidr
+  public_subnet_name = "${var.environment} Web Subnet"
   # private_subnet_name = "${var.environment} App Subnet"
-  db_subnet_name      = "${var.environment} DB Subnet"
+  db_subnet_name = "${var.environment} DB Subnet"
 }
 
 module "public_route_table" {
@@ -86,6 +86,10 @@ module "public_ec2" {
   sg            = [module.sg.web_sg]
   public_ip     = "true"
   instance_name = "web_app"
+  endpoint      = module.rds_sql.entrypoint
+  db_user       = module.rds_sql.username
+  db_password   = module.rds_sql.password
+  db_name       = module.rds_sql.dbname
 }
 
 # module "private_ec2" {
@@ -133,7 +137,7 @@ module "alb_public" {
   security_groups  = [module.sg.web_sg]
   subnets          = [module.subnets.public_subnet_ids[0], module.subnets.public_subnet_ids[1]]
   target_group_arn = module.target_group_public.target_arn
-  internel="false"
+  internel         = "false"
 }
 
 

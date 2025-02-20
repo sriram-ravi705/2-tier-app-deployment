@@ -29,6 +29,14 @@ resource "aws_vpc_security_group_ingress_rule" "https" {
   security_group_id = aws_security_group.web_sg.id
 }
 
+resource "aws_vpc_security_group_ingress_rule" "custom_tcp_for_node_app" {
+  cidr_ipv4 = "0.0.0.0/0"
+  from_port = 3000
+  to_port = 3000
+  ip_protocol = "tcp"
+  security_group_id = aws_security_group.web_sg.id
+}
+
 resource "aws_vpc_security_group_ingress_rule" "mysql" {
   cidr_ipv4 = "0.0.0.0/0"
   from_port = 3306
