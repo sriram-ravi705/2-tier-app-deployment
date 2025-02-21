@@ -111,13 +111,14 @@ module "secret_manager" {
 
 module "rds_sql" {
   source          = "./modules/rds"
-  db_username     = module.secret_manager.username
-  password        = module.secret_manager.password
+  db_username     = var.database_name
+  password        = var.database_password
   private_subnets = [module.subnets.db_subnet_ids[0], module.subnets.db_subnet_ids[1]]
   db_sub_name     = "database_rds"
   sg              = [module.sg.web_sg]
   db_name         = var.database_name
 }
+
 
 # module "target_group" {
 #   source = "./modules/target_group"
