@@ -9,4 +9,3 @@ variable "private_source_gateway_cidr_block" {}
 variable "database_username" {}
 variable "database_password" {}
 variable "database_name" {}
-variable "tfbackend" {}

@@ -102,10 +102,17 @@ module "public_ec2" {
 #   instance_name         = "app"
 # }
 
+module "secret_manager" {
+  source = "./modules/secret_manager"
+  username=var.database_name
+  password=var.database_password
+}
+
+
 module "rds_sql" {
   source          = "./modules/rds"
-  db_username     = var.database_username
-  password        = var.database_password
+  db_username     = module.secret_manager.username
+  password        = module.secret_manager.password
   private_subnets = [module.subnets.db_subnet_ids[0], module.subnets.db_subnet_ids[1]]
   db_sub_name     = "database_rds"
   sg              = [module.sg.web_sg]

@@ -1,5 +1,6 @@
 output "entrypoint" {
-  value = aws_db_instance.db.endpoint
+  #value = aws_db_instance.db.endpoint
+  value = replace(aws_db_instance.db.endpoint, "/:.*/", "")
 }
 
 output "username" {

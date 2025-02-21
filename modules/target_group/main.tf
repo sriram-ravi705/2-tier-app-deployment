@@ -1,6 +1,6 @@
 resource "aws_lb_target_group" "lb_target_group" {
   protocol = "HTTP"
-  port = 80
+  port = 3000
   vpc_id = var.vpc_id
 
   tags = {

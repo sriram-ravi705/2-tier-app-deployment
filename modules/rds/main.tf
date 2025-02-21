@@ -18,4 +18,7 @@ resource "aws_db_instance" "db" {
   tags = {
     "Name"=var.db_sub_name
   }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
