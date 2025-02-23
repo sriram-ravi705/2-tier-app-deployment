@@ -11,8 +11,8 @@ resource "aws_autoscaling_group" "ag" {
   }
   target_group_arns = var.target_group_arns
   tag {
-    key = "Name"
-    value = var.ag_name
+    key = "Terraform"
+    value = "Terraform_Instance"
     propagate_at_launch = false
   }
   
