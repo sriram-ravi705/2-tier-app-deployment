@@ -1,5 +1,3 @@
-
-
 resource "aws_autoscaling_group" "ag" {
   desired_capacity = 2
   min_size = 1
@@ -11,9 +9,14 @@ resource "aws_autoscaling_group" "ag" {
   }
   target_group_arns = var.target_group_arns
   tag {
+    key                 = "Name"
+    value               = "autoscaling"
+    propagate_at_launch = false
+  }
+
+  tag {
     key = "Terraform"
     value = "Terraform_Instance"
     propagate_at_launch = true
   }
-  
 }
