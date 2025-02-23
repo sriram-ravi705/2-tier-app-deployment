@@ -8,4 +8,7 @@ resource "aws_launch_template" "aws_template" {
     associate_public_ip_address = "true"
     security_groups = var.sg
   }     
+  tags = {
+    "Terraform"="Terraform_Instance"
+  }
 }

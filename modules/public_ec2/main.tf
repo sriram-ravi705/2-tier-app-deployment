@@ -25,5 +25,6 @@ resource "aws_instance" "instance" {
               EOT
   tags = {
     "Name"=var.instance_name
+    "Terraform"="Terraform_Instance"
   }
 }
