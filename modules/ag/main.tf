@@ -13,7 +13,7 @@ resource "aws_autoscaling_group" "ag" {
   tag {
     key = "Terraform"
     value = "Terraform_Instance"
-    propagate_at_launch = false
+    propagate_at_launch = true
   }
   
 }
