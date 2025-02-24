@@ -1,4 +1,5 @@
 resource "aws_autoscaling_group" "ag" {
+  name = "terraform_autoscaling"
   desired_capacity = 2
   min_size = 1
   max_size = 3
