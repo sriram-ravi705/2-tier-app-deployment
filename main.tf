@@ -102,12 +102,6 @@ module "public_ec2" {
 #   instance_name         = "app"
 # }
 
-# module "secret_manager" {
-#   source = "./modules/secret_manager"
-#   username=var.database_name
-#   password=var.database_password
-# }
-
 
 module "rds_sql" {
   source          = "./modules/rds"
