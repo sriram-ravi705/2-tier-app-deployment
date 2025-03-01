@@ -1,0 +1,72 @@
+- name: App tier configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache and install dependencies
+      apt:
+        update_cache: yes
+        name:
+          - git
+          - nodejs
+          - npm
+          - nginx
+        state: present
+
+    - name: Clone Taskify repo
+      git:
+        repo: https://github.com/sriram-ravi705/Taskify.git
+        dest: /home/ubuntu/Taskify
+        version: master
+
+    - name: Install npm dependencies
+      npm:
+        path: /home/ubuntu/Taskify
+
+    - name: Install pm2 globally
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Start app with pm2
+      shell: pm2 start /home/ubuntu/Taskify/index.js --name nodeapp
+
+    - name: Save pm2 process list
+      shell: pm2 save
+
+    - name: Set pm2 to start on boot
+      shell: pm2 startup systemd -u ubuntu --hp /home/ubuntu
+
+    - name: Create nginx config for Node.js app
+      copy:
+        dest: /etc/nginx/sites-available/nodeapp
+        content: |
+          server {
+            listen 80;
+            
+            location / {
+              proxy_pass http://localhost:3000;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_cache_bypass $http_upgrade;
+            }
+          }
+
+    - name: Enable nginx site configuration
+      command: nginx -t
+      notify: Reload nginx
+
+    - name: Create symbolic link for nginx site
+      command: ln -s /etc/nginx/sites-available/nodeapp /etc/nginx/sites-enabled/
+
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded
+
+  handlers:
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded

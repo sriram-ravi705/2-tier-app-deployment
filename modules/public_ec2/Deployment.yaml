@@ -1,0 +1,51 @@
+- name: app tier configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: update
+      apt:
+        update_cache: yes
+    - name: configure git
+      apt:
+        name: git
+        state: present
+    - name: configure node
+      apt:
+        name: nodejs
+        state: present
+    - name: configure npm
+      apt:
+        name: npm
+        state: present
+    - name: clone git
+      shell: |
+        'git clone https://github.com/sriram-ravi705/Taskify.git'
+    - name: npm install
+      shell: |
+        'npm install'
+      args:
+        chdir: '/home/ubuntu/Taskify'
+    - name: pm2 install
+      shell: |
+        'npm install -g pm2'
+    - name: pm2 start
+      shell: |
+        'pm2 start /home/ubuntu/Taskify/index.js --name nodeapp'
+      args:
+        chdir: '/home/ubuntu/Taskify'
+    # - name: Run pm2 startup command
+    #   shell: pm2 startup
+    #   register: pm2_startup_command
+    # - name: Execute the generated pm2 startup command
+    #   shell: "{{ pm2_startup_command.stdout }}"
+    #   when: pm2_startup_command.stdout != ""
+    # - name: pm2 save
+    #   shell: |
+    #     'pm2 save'
+    #   args:
+    #     chdir: '/home/ubuntu/Taskify'
+    # - name: pm2 flush
+    #   shell: |
+    #     'pm2 flush'
+    #   args:
+    #     chdir: '/home/ubuntu/Taskify'

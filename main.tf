@@ -102,11 +102,11 @@ module "public_ec2" {
 #   instance_name         = "app"
 # }
 
-module "secret_manager" {
-  source = "./modules/secret_manager"
-  username=var.database_name
-  password=var.database_password
-}
+# module "secret_manager" {
+#   source = "./modules/secret_manager"
+#   username=var.database_name
+#   password=var.database_password
+# }
 
 
 module "rds_sql" {
@@ -129,7 +129,7 @@ module "rds_sql" {
 module "target_group_public" {
   source = "./modules/target_group"
   vpc_id = module.vpc.vpc_id
-  ec2    = module.public_ec2.public_ip
+  ec2    = [module.public_ec2.public_ip]
 }
 
 # module "alb" {
@@ -156,9 +156,10 @@ module "alb_public" {
 # }
 
 module "public_ami" {
+  depends_on = [ module.public_ec2.public_ip ]
   source      = "./modules/ami_backup"
   ami_name    = "terraform_public_ec2_backup"
-  instance_id = module.public_ec2.public_ip[0]
+  instance_id = module.public_ec2.public_ip
 }
 
 # module "launch_template" {
