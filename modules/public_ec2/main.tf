@@ -1,3 +1,17 @@
+# data "aws_secretsmanager_secret" "fetch_secret_name" {
+#   name = "private_key"
+# }
+
+# data "aws_secretsmanager_secret_version" "secret_version_id" {
+#    secret_id = data.aws_secretsmanager_secret.fetch_secret_name.id
+# }
+
+
+# output "secret_value" {
+#   sensitive = true
+#   value = data.aws_secretsmanager_secret_version.secret_version_id.secret_string
+# }
+
 resource "aws_instance" "instance" {
   ami = var.ami
   instance_type = var.instance_type
@@ -11,7 +25,7 @@ resource "aws_instance" "instance" {
     "Terraform"="Terraform_Instance"
   }
   provisioner "file" {
-    source = "${path.module}/private_key.pem"
+    source = data.aws_secretsmanager_secret_version.secret_version_id.secret_string
     destination = "/home/ubuntu/ansible_key.pem"
   }
   connection {
@@ -25,6 +39,7 @@ resource "aws_instance" "instance" {
       host        = aws_instance.instance.public_ip
       user        = "ubuntu"
       private_key = file("${path.module}/private_key.pem")
+      #private_key = data.aws_secretsmanager_secret_version.secret_version_id.secret_string
       type        = "ssh"
     }
     
