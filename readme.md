@@ -17,4 +17,4 @@
 
 **Architecture**:
 
-![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc3tB7h12QraSZNRTOs_xdJJ8bcfQETPBFkk4Kg_r7MgKvJYyZgNG7ofuR2aR7OITujxunlLo-DYUFlhjuejkQpBqYkK4oa6OYoYXPRG9AqXF-vIrK6zil1aEA9SzgT_HifcVrU?key=jMrUhq5xpC5y-KS_M2jUC3Bo align="left")
+![](./Architecture_Diagram.png)
