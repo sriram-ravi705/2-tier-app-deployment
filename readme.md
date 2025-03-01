@@ -1,3 +1,5 @@
+# Terraform 2-Tier Infrastructure Setup
+
 **Project Title**: Automated Cloud Infrastructure with Terraform.
 
 **Technologies Used**: Terraform, Jenkins, Lambda, CloudWatch, EventBridge, Ansible
